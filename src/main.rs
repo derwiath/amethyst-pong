@@ -1,3 +1,5 @@
+mod systems;
+
 use amethyst::{
     core::transform::TransformBundle,
     input::{InputBundle, StringBindings},
@@ -36,7 +38,8 @@ fn main() -> amethyst::Result<()> {
         )?
         // Add the transform bundle which handles tracking entity positions
         .with_bundle(TransformBundle::new())?
-        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?)?;
+        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?)?
+        .with(systems::PaddleSystem, "paddle_system", &["input_system"]);
 
     let mut game = Application::new(assets_dir, Pong, game_data)?;
     game.run();
