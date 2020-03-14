@@ -47,7 +47,7 @@ fn main() -> amethyst::Result<()> {
             &["paddle_system", "move_ball_system"],
         );
 
-    let mut game = Application::new(assets_dir, Pong, game_data)?;
+    let mut game = Application::new(assets_dir, Pong::default(), game_data)?;
     game.run();
 
     Ok(())
