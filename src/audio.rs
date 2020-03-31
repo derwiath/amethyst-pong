@@ -1,8 +1,9 @@
 extern crate amethyst;
 
 use amethyst::{
+    assets::AssetStorage,
     assets::Loader,
-    audio::{OggFormat, SourceHandle},
+    audio::{output::Output, OggFormat, Source, SourceHandle},
     ecs::{World, WorldExt},
 };
 
@@ -37,4 +38,12 @@ pub fn initialise_audio(world: &mut World) {
     // Add sound effects to the world. We have to do this in another scope because
     // world won't let us insert new resources as long as `Loader` is borrowed.
     world.insert(sound_effects);
+}
+
+pub fn play_sample(sample: &SourceHandle, storage: &AssetStorage<Source>, output: Option<&Output>) {
+    if let Some(ref output) = output.as_ref() {
+        if let Some(sound) = storage.get(&sample) {
+            output.play_once(sound, 1.0);
+        }
+    }
 }
