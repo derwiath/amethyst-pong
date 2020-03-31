@@ -45,6 +45,11 @@ fn main() -> amethyst::Result<()> {
             systems::BounceSystem,
             "bounce_system",
             &["paddle_system", "move_ball_system"],
+        )
+        .with(
+            systems::WinnerSystem,
+            "winner_system",
+            &["move_ball_system"],
         );
 
     let mut game = Application::new(assets_dir, Pong::default(), game_data)?;
