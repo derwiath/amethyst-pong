@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies.amethyst]
 git = "https://github.com/amethyst/amethyst"
-rev = "ae64a3ba38a927c3ac949099a5323e5b4c4661da"
-features = ["metal"]
+rev = "6453a83c4dc5b6152d35004d64931f5e09f98e65"
+features = ["vulkan"]
