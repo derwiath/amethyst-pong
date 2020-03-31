@@ -4,9 +4,10 @@ use amethyst::{
     assets::{AssetStorage, Handle, Loader},
     core::timing::Time,
     core::transform::Transform,
-    ecs::prelude::{Component, DenseVecStorage},
+    ecs::prelude::{Component, DenseVecStorage, Entity},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
+    ui::{Anchor, TtfFormat, UiText, UiTransform},
 };
 
 #[derive(Default)]
@@ -64,6 +65,17 @@ impl Ball {
 
 impl Component for Ball {
     type Storage = DenseVecStorage<Self>;
+}
+
+#[derive(Default)]
+pub struct ScoreBoard {
+    pub left: i32,
+    pub right: i32,
+}
+
+pub struct ScoreText {
+    pub left: Entity,
+    pub right: Entity,
 }
 
 fn initialise_camera(world: &mut World) {
@@ -155,6 +167,57 @@ fn initialise_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
         .build();
 }
 
+fn initialise_scoreboard(world: &mut World) {
+    let font = world.read_resource::<Loader>().load(
+        "fonts/square.ttf",
+        TtfFormat,
+        (),
+        &world.read_resource(),
+    );
+    let left_transform = UiTransform::new(
+        "PL".to_string(),
+        Anchor::TopMiddle,
+        Anchor::TopMiddle,
+        -50.,
+        -50.,
+        1.,
+        200.,
+        50.,
+    );
+    let right_transform = UiTransform::new(
+        "PR".to_string(),
+        Anchor::TopMiddle,
+        Anchor::TopMiddle,
+        50.,
+        -50.,
+        1.,
+        200.,
+        50.,
+    );
+
+    let left_score = world
+        .create_entity()
+        .with(left_transform)
+        .with(UiText::new(
+            font.clone(),
+            "0".to_string(),
+            [1., 1., 1., 1.],
+            50.,
+        ))
+        .build();
+
+    let right_score = world
+        .create_entity()
+        .with(right_transform)
+        .with(UiText::new(font, "0".to_string(), [1., 1., 1., 1.], 50.))
+        .build();
+
+    world.insert(ScoreText {
+        left: left_score,
+        right: right_score,
+    });
+}
+
 impl SimpleState for Pong {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
@@ -168,6 +231,8 @@ impl SimpleState for Pong {
         initialise_paddles(world, self.sprite_sheet_handle.clone().unwrap());
 
         initialise_camera(world);
+
+        initialise_scoreboard(world);
     }
 
     fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
