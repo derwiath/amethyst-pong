@@ -24,20 +24,20 @@ fn load_audio_track(loader: &Loader, world: &World, file: &str) -> SourceHandle 
 /// the background tracks as well as the sound effects, but for now
 /// we'll just work on sound effects.
 pub fn initialise_audio(world: &mut World) {
-    let sound_effects = {
+    let sounds = {
         let loader = world.read_resource::<Loader>();
 
-        let sound = Sounds {
+        let sounds = Sounds {
             bounce_sfx: load_audio_track(&loader, &world, BOUNCE_SOUND),
             score_sfx: load_audio_track(&loader, &world, SCORE_SOUND),
         };
 
-        sound
+        sounds
     };
 
     // Add sound effects to the world. We have to do this in another scope because
     // world won't let us insert new resources as long as `Loader` is borrowed.
-    world.insert(sound_effects);
+    world.insert(sounds);
 }
 
 pub fn play_sample(sample: &SourceHandle, storage: &AssetStorage<Source>, output: Option<&Output>) {
