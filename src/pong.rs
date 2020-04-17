@@ -12,15 +12,13 @@ use amethyst::{
 
 use crate::config::ArenaConfig;
 use crate::config::BallConfig;
+use crate::config::PaddleConfig;
 
 #[derive(Default)]
 pub struct Pong {
     ball_spawn_timer: Option<f32>,
     sprite_sheet_handle: Option<Handle<SpriteSheet>>,
 }
-
-pub const PADDLE_HEIGHT: f32 = 16.0;
-pub const PADDLE_WIDTH: f32 = 4.0;
 
 #[derive(PartialEq, Eq)]
 pub enum Side {
@@ -35,11 +33,11 @@ pub struct Paddle {
 }
 
 impl Paddle {
-    fn new(side: Side) -> Paddle {
+    fn new(side: Side, width: f32, height: f32) -> Paddle {
         Paddle {
             side,
-            width: PADDLE_WIDTH,
-            height: PADDLE_HEIGHT,
+            width: width,
+            height: height,
         }
     }
 }
@@ -122,11 +120,15 @@ fn initialise_paddles(world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
         let config = &world.read_resource::<ArenaConfig>();
         (config.height, config.width)
     };
+    let (paddle_height, paddle_width) = {
+        let config = &world.read_resource::<PaddleConfig>();
+        (config.height, config.width)
+    };
 
     // Correctly position the paddles.
     let y = arena_height / 2.0;
-    left_transform.set_translation_xyz(PADDLE_WIDTH * 0.5, y, 0.0);
-    right_transform.set_translation_xyz(arena_width - PADDLE_WIDTH * 0.5, y, 0.0);
+    left_transform.set_translation_xyz(paddle_width * 0.5, y, 0.0);
+    right_transform.set_translation_xyz(arena_width - paddle_width * 0.5, y, 0.0);
 
     // Assign the sprites for the paddles
     let sprite_render = SpriteRender {
@@ -138,7 +140,7 @@ fn initialise_paddles(world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Paddle::new(Side::Left))
+        .with(Paddle::new(Side::Left, paddle_width, paddle_height))
         .with(left_transform)
         .build();
 
@@ -146,7 +148,7 @@ fn initialise_paddles(world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Paddle::new(Side::Right))
+        .with(Paddle::new(Side::Right, paddle_width, paddle_height))
         .with(right_transform)
         .build();
 }

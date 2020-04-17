@@ -31,8 +31,24 @@ impl Default for BallConfig {
     }
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct PaddleConfig {
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Default for PaddleConfig {
+    fn default() -> Self {
+        PaddleConfig {
+            width: 4.0,
+            height: 16.0,
+        }
+    }
+}
+
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct PongConfig {
     pub arena: ArenaConfig,
     pub ball: BallConfig,
+    pub paddle: PaddleConfig,
 }

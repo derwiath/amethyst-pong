@@ -64,6 +64,7 @@ fn main() -> amethyst::Result<()> {
     let mut game = Application::build(assets_dir, Pong::default())?
         .with_resource(pong_cfg.arena)
         .with_resource(pong_cfg.ball)
+        .with_resource(pong_cfg.paddle)
         .build(game_data)?;
     game.run();
 

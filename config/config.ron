@@ -7,4 +7,8 @@
         velocity: [75.0, 50.0],
         radius: 2.0
     ),
+    paddle: (
+        width: 4.0,
+        height: 16.0,
+    )
 )
