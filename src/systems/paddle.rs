@@ -28,7 +28,7 @@ impl<'s> System<'s> for PaddleSystem {
                 Side::Right => input.axis_value("right_paddle"),
             };
             if let Some(mv_amount) = movement {
-                let scaled_amount = 1.2 * mv_amount as f32;
+                let scaled_amount = paddle_cfg.speed * mv_amount as f32;
                 let y = (transform.translation().y + scaled_amount)
                     .min(arena_cfg.height - paddle_cfg.height * 0.5)
                     .max(paddle_cfg.height * 0.5);

@@ -35,6 +35,7 @@ impl Default for BallConfig {
 pub struct PaddleConfig {
     pub width: f32,
     pub height: f32,
+    pub speed: f32,
 }
 
 impl Default for PaddleConfig {
@@ -42,6 +43,7 @@ impl Default for PaddleConfig {
         PaddleConfig {
             width: 4.0,
             height: 16.0,
+            speed: 1.2,
         }
     }
 }
