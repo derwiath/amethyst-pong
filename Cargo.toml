@@ -10,3 +10,6 @@ edition = "2018"
 git = "https://github.com/amethyst/amethyst"
 rev = "6453a83c4dc5b6152d35004d64931f5e09f98e65"
 features = ["vulkan"]
+
+[dependencies]
+serde = { version = "1.0.106", features = ["derive"] }

@@ -1,6 +1,7 @@
 mod systems;
 
 use amethyst::{
+    config::Config,
     core::transform::TransformBundle,
     input::{InputBundle, StringBindings},
     prelude::*,
@@ -13,8 +14,10 @@ use amethyst::{
     utils::application_root_dir,
 };
 
+mod config;
 mod pong;
 
+use crate::config::ArenaConfig;
 use crate::pong::Pong;
 
 fn main() -> amethyst::Result<()> {
@@ -25,6 +28,8 @@ fn main() -> amethyst::Result<()> {
     let config_dir = app_root.join("config");
     let display_config_path = config_dir.join("display.ron");
     let binding_path = config_dir.join("bindings.ron");
+    let config_path = config_dir.join("config.ron");
+    let arena_cfg = <ArenaConfig as Config>::load(config_path).expect("failed to load game config");
 
     let game_data = GameDataBuilder::default()
         .with_bundle(
@@ -56,7 +61,9 @@ fn main() -> amethyst::Result<()> {
             &["move_ball_system"],
         );
 
-    let mut game = Application::new(assets_dir, Pong::default(), game_data)?;
+    let mut game = Application::build(assets_dir, Pong::default())?
+        .with_resource(arena_cfg)
+        .build(game_data)?;
     game.run();
 
     Ok(())

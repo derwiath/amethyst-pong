@@ -1,10 +1,11 @@
 use amethyst::{
     core::Transform,
     derive::SystemDesc,
-    ecs::prelude::{Join, ReadStorage, System, SystemData, WriteStorage},
+    ecs::prelude::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
 };
 
-use crate::pong::{Ball, Paddle, Side, ARENA_HEIGHT};
+use crate::config::ArenaConfig;
+use crate::pong::{Ball, Paddle, Side};
 
 #[derive(SystemDesc)]
 pub struct BounceSystem;
@@ -14,9 +15,10 @@ impl<'s> System<'s> for BounceSystem {
         WriteStorage<'s, Ball>,
         ReadStorage<'s, Paddle>,
         ReadStorage<'s, Transform>,
+        Read<'s, ArenaConfig>,
     );
 
-    fn run(&mut self, (mut balls, paddles, transforms): Self::SystemData) {
+    fn run(&mut self, (mut balls, paddles, transforms, arena_cfg): Self::SystemData) {
         // Check whether a ball collided, and bounce off accordingly.
         //
         // We also check for the velocity of the ball every time, to prevent multiple collisions
@@ -27,7 +29,7 @@ impl<'s> System<'s> for BounceSystem {
 
             // Bounce at the top or the bottom of the arena.
             if (ball_y <= ball.radius && ball.velocity[1] < 0.0)
-                || (ball_y >= ARENA_HEIGHT - ball.radius && ball.velocity[1] > 0.0)
+                || (ball_y >= arena_cfg.height - ball.radius && ball.velocity[1] > 0.0)
             {
                 ball.velocity[1] *= -1.0;
             }

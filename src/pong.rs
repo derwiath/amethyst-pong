@@ -10,14 +10,13 @@ use amethyst::{
     ui::{Anchor, TtfFormat, UiText, UiTransform},
 };
 
+use crate::config::ArenaConfig;
+
 #[derive(Default)]
 pub struct Pong {
     ball_spawn_timer: Option<f32>,
     sprite_sheet_handle: Option<Handle<SpriteSheet>>,
 }
-
-pub const ARENA_HEIGHT: f32 = 100.0;
-pub const ARENA_WIDTH: f32 = 100.0;
 
 pub const PADDLE_HEIGHT: f32 = 16.0;
 pub const PADDLE_WIDTH: f32 = 4.0;
@@ -79,13 +78,17 @@ pub struct ScoreText {
 }
 
 fn initialise_camera(world: &mut World) {
+    let (arena_height, arena_width) = {
+        let config = &world.read_resource::<ArenaConfig>();
+        (config.height, config.width)
+    };
     // Setup camera in a way that our screen covers whole arena and (0, 0) is in the bottom left.
     let mut transform = Transform::default();
-    transform.set_translation_xyz(ARENA_WIDTH * 0.5, ARENA_HEIGHT * 0.5, 1.0);
+    transform.set_translation_xyz(arena_width * 0.5, arena_height * 0.5, 1.0);
 
     world
         .create_entity()
-        .with(Camera::standard_2d(ARENA_WIDTH, ARENA_HEIGHT))
+        .with(Camera::standard_2d(arena_width, arena_height))
         .with(transform)
         .build();
 }
@@ -118,11 +121,15 @@ fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
 fn initialise_paddles(world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
     let mut left_transform = Transform::default();
     let mut right_transform = Transform::default();
+    let (arena_height, arena_width) = {
+        let config = &world.read_resource::<ArenaConfig>();
+        (config.height, config.width)
+    };
 
     // Correctly position the paddles.
-    let y = ARENA_HEIGHT / 2.0;
+    let y = arena_height / 2.0;
     left_transform.set_translation_xyz(PADDLE_WIDTH * 0.5, y, 0.0);
-    right_transform.set_translation_xyz(ARENA_WIDTH - PADDLE_WIDTH * 0.5, y, 0.0);
+    right_transform.set_translation_xyz(arena_width - PADDLE_WIDTH * 0.5, y, 0.0);
 
     // Assign the sprites for the paddles
     let sprite_render = SpriteRender {
@@ -150,8 +157,12 @@ fn initialise_paddles(world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
 fn initialise_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     // Initialises one ball in the middle-ish of the arena.
     // Create the translation.
+    let (arena_height, arena_width) = {
+        let config = &world.read_resource::<ArenaConfig>();
+        (config.height, config.width)
+    };
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(ARENA_WIDTH / 2.0, ARENA_HEIGHT / 2.0, 0.0);
+    local_transform.set_translation_xyz(arena_width / 2.0, arena_height / 2.0, 0.0);
 
     // Assign the sprite for the ball
     let sprite_render = SpriteRender {
