@@ -1,4 +1,10 @@
 (
-    width: 100.0,
-    height: 100.0,
+    arena: (
+        width: 100.0,
+        height: 100.0,
+    ),
+    ball: (
+        velocity: [75.0, 50.0],
+        radius: 2.0
+    ),
 )

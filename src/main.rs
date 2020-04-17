@@ -17,7 +17,7 @@ use amethyst::{
 mod config;
 mod pong;
 
-use crate::config::ArenaConfig;
+use crate::config::PongConfig;
 use crate::pong::Pong;
 
 fn main() -> amethyst::Result<()> {
@@ -29,7 +29,7 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = config_dir.join("display.ron");
     let binding_path = config_dir.join("bindings.ron");
     let config_path = config_dir.join("config.ron");
-    let arena_cfg = <ArenaConfig as Config>::load(config_path).expect("failed to load game config");
+    let pong_cfg = <PongConfig as Config>::load(config_path).expect("failed to load game config");
 
     let game_data = GameDataBuilder::default()
         .with_bundle(
@@ -62,7 +62,8 @@ fn main() -> amethyst::Result<()> {
         );
 
     let mut game = Application::build(assets_dir, Pong::default())?
-        .with_resource(arena_cfg)
+        .with_resource(pong_cfg.arena)
+        .with_resource(pong_cfg.ball)
         .build(game_data)?;
     game.run();
 

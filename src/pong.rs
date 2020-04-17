@@ -11,6 +11,7 @@ use amethyst::{
 };
 
 use crate::config::ArenaConfig;
+use crate::config::BallConfig;
 
 #[derive(Default)]
 pub struct Pong {
@@ -20,10 +21,6 @@ pub struct Pong {
 
 pub const PADDLE_HEIGHT: f32 = 16.0;
 pub const PADDLE_WIDTH: f32 = 4.0;
-
-pub const BALL_VELOCITY_X: f32 = 75.0;
-pub const BALL_VELOCITY_Y: f32 = 50.0;
-pub const BALL_RADIUS: f32 = 2.0;
 
 #[derive(PartialEq, Eq)]
 pub enum Side {
@@ -161,6 +158,10 @@ fn initialise_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
         let config = &world.read_resource::<ArenaConfig>();
         (config.height, config.width)
     };
+    let (ball_velocity, ball_radius) = {
+        let config = &world.read_resource::<BallConfig>();
+        (config.velocity, config.radius)
+    };
     let mut local_transform = Transform::default();
     local_transform.set_translation_xyz(arena_width / 2.0, arena_height / 2.0, 0.0);
 
@@ -173,7 +174,7 @@ fn initialise_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
     world
         .create_entity()
         .with(sprite_render)
-        .with(Ball::new([BALL_VELOCITY_X, BALL_VELOCITY_Y], BALL_RADIUS))
+        .with(Ball::new([ball_velocity.x, ball_velocity.y], ball_radius))
         .with(local_transform)
         .build();
 }
